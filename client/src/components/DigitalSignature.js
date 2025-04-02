@@ -4,6 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import GuideToDigitalSignature from "../components/GuideToDigitalSignature";
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 const pdfPath = process.env.PUBLIC_URL + "/consform.pdf"; 
 
@@ -58,7 +59,7 @@ const DigitalSignature = ({ handleNextStep }) => {
       formData.append("file", file);
 
       try {
-        const response = await axios.post("http://localhost:5000/api/signnow/upload-document", formData, {
+        const response = await axios.post(`${backendUrl}/api/signnow/upload-document`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         setId(response.data.documentId);
@@ -84,7 +85,7 @@ const DigitalSignature = ({ handleNextStep }) => {
 
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:5000/api/signnow/send-signature-request", {
+      const response = await axios.post(`${backendUrl}/api/signnow/send-signature-request`, {
         signerEmail: email,
         signerName: name,
         documentId: id,
@@ -108,12 +109,12 @@ const DigitalSignature = ({ handleNextStep }) => {
 
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:5000/api/signnow/get-signing-url", { inviteId, documentId: id });
+      const response = await axios.post(`${backendUrl}/api/signnow/get-signing-url`, { inviteId, documentId: id });
       window.open(response.data.signingUrl, "_blank", "width=800,height=600");
 
 
 // ✅ Save the event in the database
-await axios.post("http://localhost:5000/api/timeline/save-event", {
+await axios.post(`${backendUrl}/api/timeline/save-event`, {
   userId: userId, // Replace with actual user ID
   title: "Digital Signature Completed",
   description: " successfully Signed the document.",

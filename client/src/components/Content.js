@@ -2,46 +2,46 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import AutoFixHighRoundedIcon from '@mui/icons-material/AutoFixHighRounded';
-import ConstructionRoundedIcon from '@mui/icons-material/ConstructionRounded';
-import SettingsSuggestRoundedIcon from '@mui/icons-material/SettingsSuggestRounded';
-import ThumbUpAltRoundedIcon from '@mui/icons-material/ThumbUpAltRounded';
-import { SitemarkIcon } from './CustomIcons';
+import VerifiedUserRoundedIcon from '@mui/icons-material/VerifiedUserRounded';
+import SecurityRoundedIcon from '@mui/icons-material/SecurityRounded';
+import AssignmentTurnedInRoundedIcon from '@mui/icons-material/AssignmentTurnedInRounded';
+import GppGoodRoundedIcon from '@mui/icons-material/GppGoodRounded';
+import logo  from '../assets/logo.svg';
 
 const items = [
   {
-    icon: <SettingsSuggestRoundedIcon sx={{ color: 'text.secondary' }} />,
-    title: 'Adaptable performance',
+    icon: <VerifiedUserRoundedIcon sx={{ color: 'text.secondary' }} />,
+    title: 'Trusted Verification',
     description:
-      'Our product effortlessly adjusts to your needs, boosting efficiency and simplifying your tasks.',
+      'Ensure authenticity with a secure and reliable verification process for sellers.',
   },
   {
-    icon: <ConstructionRoundedIcon sx={{ color: 'text.secondary' }} />,
-    title: 'Built to last',
+    icon: <SecurityRoundedIcon sx={{ color: 'text.secondary' }} />,
+    title: 'Secure Transactions',
     description:
-      'Experience unmatched durability that goes above and beyond with lasting investment.',
+      'Enhance buyer confidence by verifying sellers before transactions.',
   },
   {
-    icon: <ThumbUpAltRoundedIcon sx={{ color: 'text.secondary' }} />,
-    title: 'Great user experience',
+    icon: <AssignmentTurnedInRoundedIcon sx={{ color: 'text.secondary' }} />,
+    title: 'Compliance Guaranteed',
     description:
-      'Integrate our product into your routine with an intuitive and easy-to-use interface.',
+      'Meet industry standards with a seamless verification process.',
   },
   {
-    icon: <AutoFixHighRoundedIcon sx={{ color: 'text.secondary' }} />,
-    title: 'Innovative functionality',
+    icon: <GppGoodRoundedIcon sx={{ color: 'text.secondary' }} />,
+    title: 'Fraud Prevention',
     description:
-      'Stay ahead with features that set new standards, addressing your evolving needs better than the rest.',
+      'Reduce risks and prevent fraudulent activities with advanced verification checks.',
   },
 ];
 
-export default function Content() {
+export default function SellerVerificationContent() {
   return (
     <Stack
       sx={{ flexDirection: 'column', alignSelf: 'center', gap: 4, maxWidth: 450 }}
     >
       <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-        <SitemarkIcon />
+        <img src={logo} alt="Logo" style={{ width: '40%', height: 'auto' }} /> 
       </Box>
       {items.map((item, index) => (
         <Stack key={index} direction="row" sx={{ gap: 2 }}>

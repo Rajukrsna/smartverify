@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios"; // ✅ Import axios
 import { Button, TextField, Container, Typography, Alert } from "@mui/material";
 import { useNavigate } from "react-router-dom"; // ✅ Import useNavigate
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 const SellerRegister = () => {
   const [sellerData, setSellerData] = useState({ name: "", email: "", password: "" });
@@ -15,7 +16,7 @@ console.log(sellerData)
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/authRoute/register", {
+      const response = await axios.post(`${backendUrl}/authRoute/register`, {
         name: sellerData.name,
         email: sellerData.email,
         password: sellerData.password,

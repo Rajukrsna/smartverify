@@ -84,14 +84,6 @@ const SellerDashboard = (props) => {
   useEffect(() => {
     fetchEvents();
   }, []);
-
-
-
-
-
-
-
-
   return (
     <AppTheme {...props}>
     <CssBaseline enableColorScheme />

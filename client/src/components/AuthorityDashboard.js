@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Button, Container, Typography, Paper, Grid } from "@mui/material";
 import axios from "axios";
-
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 const AuthorityDashboard = () => {
   const [registrations, setRegistrations] = useState([]);
 
   useEffect(() => {
     const fetchRegistrations = async () => {
-      const res = await axios.get("http://localhost:5000/api/registrations");
+      const res = await axios.get(`${backendUrl}/api/registrations`);
       setRegistrations(res.data);
     };
     fetchRegistrations();
