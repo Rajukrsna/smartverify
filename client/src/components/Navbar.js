@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { AppBar, Toolbar, Typography, Button, Box, IconButton } from "@mui/material";
+import { AppBar, Toolbar, Typography, Button, Box, IconButton, Avatar } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import ColorModeSelect from "../theme/ColorModeSelect";
 import {  DashboardIcon, LoginIcon, RegisterIcon, LogoutIcon } from "../components/CustomIcons";
 import { ReactComponent as SmartVerifyLogo } from '../logo.svg';
-
+import { useTranslation } from "react-i18next";
+import TNLOGO from "../assets/logo4.png";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { t, i18n } = useTranslation();
 
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
   useEffect(() => {
     setIsAuthenticated(!!localStorage.getItem("authToken"));
   }, []);
@@ -52,8 +57,15 @@ const Navbar = () => {
                 startIcon={<DashboardIcon />}
                 sx={{ color: "black", fontWeight: "bold" }}
               >
-                Dashboard
+                {t("dashboard")}
               </Button>
+              
+        {/* Theme + Language Toggle */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <Button onClick={() => changeLanguage("en")}>EN</Button>
+          <Button onClick={() => changeLanguage("ta")}>TA</Button>
+          <ColorModeSelect />
+        </Box>
               <Button
                 color="inherit"
                 onClick={handleLogout}
@@ -63,7 +75,7 @@ const Navbar = () => {
                   fontWeight: "bold",
                 }}
               >
-                Logout
+                {t("logout")}
               </Button>
             </>
           ) : (
@@ -74,7 +86,7 @@ const Navbar = () => {
                 startIcon={<LoginIcon />}
                 sx={{ color: "black", fontWeight: "bold" }}
               >
-                Login
+                {t("login")}
               </Button>
               <Button
                 color="inherit"
@@ -82,11 +94,15 @@ const Navbar = () => {
                 startIcon={<RegisterIcon />}
                 sx={{ color: "black", fontWeight: "bold" }}
               >
-                Register
+               {t("register")}
               </Button>
             </>
           )}
         </Box>
+          <IconButton component={Link} to="/" sx={{ p: 1 }}>
+            <Avatar src={TNLOGO} alt="Logo" sx={{ width: 35, height: 35 }} /> 
+          </IconButton>
+   
       </Toolbar>
     </AppBar>
   );

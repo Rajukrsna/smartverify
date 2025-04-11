@@ -7,35 +7,34 @@ import SecurityRoundedIcon from '@mui/icons-material/SecurityRounded';
 import AssignmentTurnedInRoundedIcon from '@mui/icons-material/AssignmentTurnedInRounded';
 import GppGoodRoundedIcon from '@mui/icons-material/GppGoodRounded';
 import logo  from '../assets/logo.svg';
+import { useTranslation } from 'react-i18next'; 
 
-const items = [
-  {
-    icon: <VerifiedUserRoundedIcon sx={{ color: 'text.secondary' }} />,
-    title: 'Trusted Verification',
-    description:
-      'Ensure authenticity with a secure and reliable verification process for sellers.',
-  },
-  {
-    icon: <SecurityRoundedIcon sx={{ color: 'text.secondary' }} />,
-    title: 'Secure Transactions',
-    description:
-      'Enhance buyer confidence by verifying sellers before transactions.',
-  },
-  {
-    icon: <AssignmentTurnedInRoundedIcon sx={{ color: 'text.secondary' }} />,
-    title: 'Compliance Guaranteed',
-    description:
-      'Meet industry standards with a seamless verification process.',
-  },
-  {
-    icon: <GppGoodRoundedIcon sx={{ color: 'text.secondary' }} />,
-    title: 'Fraud Prevention',
-    description:
-      'Reduce risks and prevent fraudulent activities with advanced verification checks.',
-  },
-];
 
 export default function SellerVerificationContent() {
+    const { t } = useTranslation();
+  
+    const items = [
+      {
+        icon: <VerifiedUserRoundedIcon sx={{ color: 'text.secondary' }} />,
+        title: t("trusted_verification"),
+        description: t("trusted_verification_desc"),
+      },
+      {
+        icon: <SecurityRoundedIcon sx={{ color: 'text.secondary' }} />,
+        title: t("secure_transactions"),
+        description: t("secure_transactions_desc"),
+      },
+      {
+        icon: <AssignmentTurnedInRoundedIcon sx={{ color: 'text.secondary' }} />,
+        title: t("compliance_guaranteed"),
+        description: t("compliance_guaranteed_desc"),
+      },
+      {
+        icon: <GppGoodRoundedIcon sx={{ color: 'text.secondary' }} />,
+        title: t("fraud_prevention"),
+        description: t("fraud_prevention_desc"),
+      },
+    ];
   return (
     <Stack
       sx={{ flexDirection: 'column', alignSelf: 'center', gap: 4, maxWidth: 450 }}

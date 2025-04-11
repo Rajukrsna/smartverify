@@ -1,10 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Paper, Typography, Button, Fade } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-
+import { useTranslation } from "react-i18next";
+import axios from "axios";
+const backendUrl = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";  
+const userId = localStorage.getItem("userId"); 
 const VerificationComplete = ({ navigate }) => {
-  const handleDownloadReceipt = () => alert("Downloading receipt...");
+  const { t } = useTranslation();
 
+useEffect(() => {
+     const handleTransactionId = async() => {  
+     const response = await axios.post(`${backendUrl}/api/timeline/transaction`, {
+      transactionId: "123hf4o534we567890",
+       userId: userId},)
+      console.log(response.data); 
+     }
+    handleTransactionId() ;
+  }, []); 
+
+  const handleDownloadReceipt = () => alert(t("verification.downloadAlert"));
+    
   return (
     <Fade in timeout={1000}>
       <Paper
@@ -20,16 +35,26 @@ const VerificationComplete = ({ navigate }) => {
       >
         <CheckCircleIcon sx={{ fontSize: 60, color: "green" }} />
         <Typography variant="h5" sx={{ mt: 2, fontWeight: "bold" }}>
-          Great!
+          {t("verification.title")}
         </Typography>
-        <Typography>Your Registration Has been verified successfully.</Typography>
+        <Typography>{t("verification.message")}</Typography>
 
-        <Button variant="contained" color="warning" sx={{ mt: 3, width: "80%", borderRadius: "20px" }} onClick={() => navigate("/seller-dashboard")}>
-          Return to Dashboard
+        <Button
+          variant="contained"
+          color="warning"
+          sx={{ mt: 3, width: "80%", borderRadius: "20px" }}
+          onClick={() => navigate("/seller-dashboard")}
+        >
+          {t("verification.dashboardBtn")}
         </Button>
 
-        <Button variant="outlined" color="primary" sx={{ mt: 2, width: "80%", borderRadius: "20px" }} onClick={handleDownloadReceipt}>
-          Download Receipt
+        <Button
+          variant="outlined"
+          color="primary"
+          sx={{ mt: 2, width: "80%", borderRadius: "20px" }}
+          onClick={handleDownloadReceipt}
+        >
+          {t("verification.downloadBtn")}
         </Button>
       </Paper>
     </Fade>

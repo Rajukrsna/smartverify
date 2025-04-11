@@ -1,42 +1,44 @@
 import React from "react";
-import { Box, Typography, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 import { FaFileUpload, FaUserEdit, FaPaperPlane, FaSignature, FaCheckCircle } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
-const steps = [
-  { id: 1, icon: <FaFileUpload />, text: "Upload the document you want to sign." },
-  { id: 2, icon: <FaUserEdit />, text: "Enter your name for the signature." },
-  { id: 3, icon: <FaPaperPlane />, text: "Click 'Send for Signing' to initiate the signing process." },
-  { id: 4, icon: <FaSignature />, text: "Click 'Sign Now' to open the signing window." },
-  { id: 5, icon: <FaCheckCircle />, text: "Follow the instructions to complete the signing process." },
-];
 
-const GuideToUploadDigitalSign = ({ isOpen, onClose }) => {
+ 
+const SignatureSteps = () => {
+  const { t } = useTranslation();
+
+  const steps = [
+    { id: 1, icon: <FaFileUpload size={30} color="#1976d2" />, text: t("step1") },
+    { id: 2, icon: <FaUserEdit size={30} color="#1976d2" />, text: t("step2") },
+    { id: 3, icon: <FaPaperPlane size={30} color="#1976d2" />, text: t("step3") },
+    { id: 4, icon: <FaSignature size={30} color="#1976d2" />, text: t("step4") },
+    { id: 5, icon: <FaCheckCircle size={30} color="#1976d2" />, text: t("step5") },
+  ];
   return (
-    <Dialog open={isOpen} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle sx={{ textAlign: "center" }}>📜 Guide to Upload Digital Sign</DialogTitle>
-      <DialogContent>
-        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", mt: 2 }}>
-          <Box sx={{ display: "flex", alignItems: "center", flexWrap: "wrap", justifyContent: "center" }}>
-            {steps.map((step, index) => (
-              <Box key={step.id} sx={{ display: "flex", alignItems: "center" }}>
-                <Paper sx={{ p: 2, textAlign: "center", minWidth: 200, m: 1 }} elevation={3}>
-                  <Typography variant="h6">Step {step.id}</Typography>
-                  <Box sx={{ fontSize: 30, my: 1 }}>{step.icon}</Box>
-                  <Typography>{step.text}</Typography>
-                </Paper>
-                {index < steps.length - 1 && (
-                  <Typography sx={{ mx: 1, fontSize: 24 }}>➡️</Typography>
-                )}
-              </Box>
-            ))}
-          </Box>
-        </Box>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} color="primary" variant="contained">Close</Button>
-      </DialogActions>
-    </Dialog>
+    <Box display="flex" flexWrap="wrap" justifyContent="center" gap={2} p={2}>
+      {steps.map((step) => (
+        <Paper
+          key={step.id}
+          elevation={3}
+          sx={{
+            width: 220,
+            p: 2,
+            textAlign: "center",
+            borderRadius: 3,
+            backgroundColor: "#f9f9f9",
+          }}
+        >
+          <Box mb={1}>{step.icon}</Box>
+          <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+          {t("step")} {step.id}          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {step.text}
+          </Typography>
+        </Paper>
+      ))}
+    </Box>
   );
 };
 
-export default GuideToUploadDigitalSign;
+export default SignatureSteps;

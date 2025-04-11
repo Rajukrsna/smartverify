@@ -18,56 +18,58 @@ import DoneAllIcon from "@mui/icons-material/DoneAll";
 import { green, red, blue, grey } from "@mui/material/colors";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-const events = [
-  { title: "CONSULTANT's Final Invoice Submission", date: "Jan 1, 2023", endDate: "Jan 2, 2023" },
-  { title: "Agreement Termination by COMMISSION", date: "Jan 30, 2023", endDate: "Jan 31, 2023" },
-];
-const notifications = [
+import { useTranslation } from "react-i18next";
+const userId = localStorage.getItem("userId");
+console.log("userId", userId);  
+const SellerDashboard = (props) => {
+  const { t } = useTranslation();
+const [notifications , setNotifications] = useState([]);  
+// Notifications
+const notifcations = [
   {
     id: 1,
-    title: "Maintenance request update",
-    description: "The maintenance request for John Doe in Apartment 301 has been Completed. The issue was a leaking faucet in the kitchen.",
-    time: "5h ago",
+    title: t("notifications.1.title"),
+    description: t("notifications.1.description"),
+    time: t("notifications.1.time"),
     type: "info",
   },
   {
     id: 2,
-    title: "Rent Payment Confirmation",
-    description: "We have received the rent payment of $1,200 for Jane Smith in Apartment 102. The payment was processed successfully.",
-    time: "7h ago",
+    title: t("notifications.2.title"),
+    description: t("notifications.2.description"),
+    time: t("notifications.2.time"),
     type: "success",
   },
   {
     id: 3,
-    title: "Lease Renewal Reminder",
-    description: "The lease for Esther Howard in Apartment 308 is set to expire on October 15, 2023. Please take appropriate action.",
-    time: "9h ago",
+    title: t("notifications.3.title"),
+    description: t("notifications.3.description"),
+    time: t("notifications.3.time"),
     type: "warning",
   },
 ];
+
+// Instruction Steps
 const instructionSteps = [
   {
     id: 1,
-    title: "Step 1: Record Video Statement",
-    description: "Record a video statement confirming your consent.",
-    image: RecordImage, // Replace with actual image path
+    title: t("instructions.1.title"),
+    description: t("instructions.1.description"),
+    image: RecordImage,
   },
   {
     id: 2,
-    title: "Step 2: Digitally Sign Documents",
-    description: "Digitally sign the necessary documents.",
+    title: t("instructions.2.title"),
+    description: t("instructions.2.description"),
     image: SignImage,
   },
   {
     id: 3,
-    title: "Step 3: AI Verification",
-    description: "Await verification by our AI and proceed with the transaction.",
+    title: t("instructions.3.title"),
+    description: t("instructions.3.description"),
     image: AIimg,
   },
 ];
-const userId = localStorage.getItem("userId");
-console.log("userId", userId);  
-const SellerDashboard = (props) => {
   const navigate = useNavigate();
 
   const [events, setEvents] = useState([]);
@@ -80,9 +82,20 @@ const SellerDashboard = (props) => {
       console.error("❌ Error fetching events:", error);
     }
   };
-  
+  const fetchNotifications = async () => {
+             try{
+      const response = await axios.get(`http://localhost:5000/api/timeline/notifications/${userId}`); 
+      setNotifications(response.data);
+             }
+             catch(error){
+                console.error("❌ Error fetching notifications:", error);
+              } 
+
+
+  }
   useEffect(() => {
     fetchEvents();
+    fetchNotifications();
   }, []);
   return (
     <AppTheme {...props}>
@@ -152,7 +165,7 @@ const SellerDashboard = (props) => {
       }}
     >
       <Typography variant="h5" fontWeight="bold" align="center" gutterBottom>
-        Steps to Complete Verification
+       {t("seed")}
       </Typography>
 
       {/* Instructions Grid */}
@@ -185,7 +198,7 @@ const SellerDashboard = (props) => {
           size="large"
           onClick={() => navigate("/verification")}
         >
-          Proceed to Verification
+      {t("proceed")}
         </Button>
       </Box>
     </Card>
@@ -199,7 +212,7 @@ const SellerDashboard = (props) => {
           {/* Header with Notification Icon and Mark All as Read */}
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <Typography variant="h6" fontWeight="bold">
-              <NotificationsActiveIcon color="primary" sx={{ verticalAlign: "middle", mr: 1 }} /> Notifications
+              <NotificationsActiveIcon color="primary" sx={{ verticalAlign: "middle", mr: 1 }} /> {t("Noti")}
             </Typography>
             <IconButton color="success">
               <DoneAllIcon />
@@ -249,15 +262,15 @@ const SellerDashboard = (props) => {
                 <ListItemText
                   primary={
                     <Typography fontWeight="bold" variant="body1">
-                      {notification.title}
+                     TransactionID: {notification.transactionId}
                     </Typography>
                   }
                   secondary={
                     <>
                       <Typography variant="body2">{notification.description}</Typography>
                       <Typography variant="caption" color="textSecondary">
-                        {notification.time}
-                      </Typography>
+  {new Date(notification.date).toLocaleString()}
+</Typography>
                     </>
                   }
                 />
@@ -282,7 +295,7 @@ const SellerDashboard = (props) => {
               Key Events
             </Typography>
             <Button variant="contained" color="primary" startIcon={<CalendarTodayIcon />}>
-              Add all events to calendar
+             {t("calander")}
             </Button>
           </Box>
           <Timeline
@@ -320,7 +333,7 @@ const SellerDashboard = (props) => {
   ))}
 </Timeline>
           <Typography color="primary" sx={{ mt: 2, cursor: "pointer", "&:hover": { textDecoration: "underline" } }}>
-            📌 Click on each event to see more details
+            {t("details")}
           </Typography>
         </CardContent>
       </Card>

@@ -4,6 +4,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import GuideToDigitalSignature from "../components/GuideToDigitalSignature";
+import { useTranslation } from "react-i18next";
+
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 const pdfPath = process.env.PUBLIC_URL + "/consform.pdf"; 
@@ -18,13 +20,14 @@ const DigitalSignature = ({ handleNextStep }) => {
   const [email, setEmail] = useState(""); 
   const [consentChecked, setConsentChecked] = useState(false); // Checkbox state
   const userId = localStorage.getItem("userId");
+  const { t } = useTranslation();
 
   // ✅ Check if signing was successful on component mount
   useEffect(() => {
     const checkSuccess = () => {
       if (localStorage.getItem("successfulSign") === "true") {
         setModalOpen(true);
-        toast.success("Signature Completed Successfully! 🎉", { position: "top-right" });
+        toast.success(t("signature_success") ,{ position: "top-right" });
         localStorage.removeItem("successfulSign");
       }
     };
@@ -63,10 +66,10 @@ const DigitalSignature = ({ handleNextStep }) => {
           headers: { "Content-Type": "multipart/form-data" },
         });
         setId(response.data.documentId);
-        toast.success("Consent Form Verified and Uploaded ✅", { position: "top-right" });
+        toast.success(t("verified"), { position: "top-right" });
       } catch (error) {
         console.error("Error uploading document:", error);
-        toast.error("Failed to upload document. ❌", { position: "top-right" });
+        toast.error(t("failed"), { position: "top-right" });
       }
       setLoading(false);
     }
@@ -75,11 +78,11 @@ const DigitalSignature = ({ handleNextStep }) => {
   // 🔹 Send Signature Request
   const sendSignatureRequest = async () => {
     if (!name) {
-      toast.warn("Please enter your name. ✏️", { position: "top-right" });
+      toast.warn(t("please"), { position: "top-right" });
       return;
     }
     if (!consentChecked) {
-      toast.warn("Please verify the consent form before proceeding.", { position: "top-right" });
+      toast.warn(t("please2"), { position: "top-right" });
       return;
     }
 
@@ -92,10 +95,10 @@ const DigitalSignature = ({ handleNextStep }) => {
       });
 
       setInviteId(response.data.inviteId);
-      toast.success("Signature request sent successfully! 📩", { position: "top-right" });
+      toast.success(t("sent"), { position: "top-right" });
     } catch (error) {
       console.error("Error sending signature request:", error);
-      toast.error("Failed to send signature request. ❌", { position: "top-right" });
+      toast.error(t("fail"), { position: "top-right" });
     }
     setLoading(false);
   };
@@ -140,7 +143,7 @@ await axios.post(`${backendUrl}/api/timeline/save-event`, {
         <Grid item xs={12} md={6}>
           <Card variant="outlined" sx={{ p: 2, textAlign: "left", height: "100%" }}>
             <CardContent>
-              <Typography variant="h6" gutterBottom>Preview Document</Typography>
+              <Typography variant="h6" gutterBottom>{t("preview")}</Typography>
               <div style={{ border: "1px solid #ccc", height: "400px", overflowY: "auto" }}>
                 <iframe src={pdfPath} width="100%" height="100%" style={{ border: "none" }}></iframe>
               </div>
@@ -156,24 +159,24 @@ await axios.post(`${backendUrl}/api/timeline/save-event`, {
               {/* Checkbox for Consent Verification */}
               <FormControlLabel
                 control={<Checkbox checked={consentChecked} onChange={handleCheckboxChange} />}
-                label="I have read and verified the consent preview"
+                label={t("read")}
               />
 
-              <Typography variant="h6" gutterBottom>Add Signature</Typography>
-              <Tooltip title="This NAME will be used to verify your credentials." arrow>
-                <TextField fullWidth label="Enter Name" value={name} onChange={(e) => setName(e.target.value)} sx={{ my: 2 }} />
+              <Typography variant="h6" gutterBottom>{t("add")}</Typography>
+              <Tooltip title={t("veri")} arrow>
+                <TextField fullWidth label={t("name")} value={name} onChange={(e) => setName(e.target.value)} sx={{ my: 2 }} />
               </Tooltip>
 
-              <Tooltip title="You will get notified in this email after a successful signature." arrow>
-                <TextField fullWidth label="Enter Your Email" value={email} onChange={(e) => setEmail(e.target.value)} sx={{ my: 2 }} />
+              <Tooltip title={t("seri")} arrow>
+                <TextField fullWidth label={t("email")} value={email} onChange={(e) => setEmail(e.target.value)} sx={{ my: 2 }} />
               </Tooltip>  
 
               <Button variant="contained" color="success" onClick={sendSignatureRequest} disabled={!consentChecked || loading} sx={{ mr: 2 }}>
-                {loading ? <CircularProgress size={24} /> : "Send for Signing"}
+                {loading ? <CircularProgress size={24} /> : t("sendf")}
               </Button>
 
               <Button color="primary" onClick={getSigningUrl} disabled={!inviteId || loading}>
-                {loading ? <CircularProgress size={24} /> : "Sign Now"}
+                {loading ? <CircularProgress size={24} /> : t("signnow")}
               </Button>
             </CardContent>
           </Card>
@@ -181,22 +184,24 @@ await axios.post(`${backendUrl}/api/timeline/save-event`, {
 
         {/* Guide Section */}
         <Grid item xs={12}>
-          <Button onClick={() => setModalOpen1(true)} variant="contained" color="primary" sx={{ mt: 2 }}>View Guide</Button>
-          <GuideToDigitalSignature isOpen={modalOpen1} onClose={() => setModalOpen1(false)} />
+<Typography variant="h6" gutterBottom > {t("viewg")   }</Typography>          
         </Grid>
       </Grid>
 
       {/* ✅ Success Modal */}
       <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
-        <DialogTitle>✅ Signature Completed</DialogTitle>
+        <DialogTitle>✅ {t("comp")}</DialogTitle>
         <DialogContent>
-          <Typography>Your document has been signed successfully!</Typography>
+          <Typography>{t("suck")}</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => { setModalOpen(false); handleNextStep(); }} color="primary">Close</Button>
+          <Button onClick={() => { setModalOpen(false); handleNextStep(); }} color="primary">{t("close")}</Button>
         </DialogActions>
       </Dialog>
+      <GuideToDigitalSignature />
     </Paper>
+
+
   );
 };
 
