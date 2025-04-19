@@ -19,6 +19,23 @@ git clone https://github.com/Rajukrsna/smartverify.git
 ```bash
 cd client
 ```
+```bash
+npm install
+```
+```bash
+npm start
+```
+The frontend will run at localhost:3000
+
+```bash
+cd backend
+```
+```bash
+npm install
+```
+```bash
+npx nodemon server.js
+```
 
 # 📘 SmartVerify API Documentation
 
