@@ -36,7 +36,7 @@ npm install
 ```bash
 npx nodemon server.js
 ```
-
+The backend will run at localhost:5000
 # 📘 SmartVerify API Documentation
 
 ## 🔐 API Gateway
@@ -99,4 +99,7 @@ npx nodemon server.js
 |--------|--------------------------|-----------------------------------------|
 | POST   | `/save-event`            | Save consent event to timeline          |
 | GET    | `/events/:userId`        | Fetch timeline events for a user        |
+
+This transparent process protects both governments and buyers from future **legal disputes**, where sellers might later claim they were forced or unaware. All verifications are conducted in **real-time** and **facelessly**, making the process both **secure** and **efficient**.
+
 
