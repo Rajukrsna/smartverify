@@ -8,6 +8,7 @@ import Verification from "./pages/Verification";
 import SellerDashboard from "./components/SellerDashboard";
 import SignUp from "./pages/SignUp"; 
 import SigningSuccess from "./components/SigningSuccess";  
+
 import './i18n'; // Import the i18n config 
 const App = () => {
 

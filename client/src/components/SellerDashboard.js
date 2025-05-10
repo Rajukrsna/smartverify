@@ -24,30 +24,9 @@ console.log("userId", userId);
 const SellerDashboard = (props) => {
   const { t } = useTranslation();
 const [notifications , setNotifications] = useState([]);  
+const [aiStatus , setAistatus] = useState([]);
 // Notifications
-const notifcations = [
-  {
-    id: 1,
-    title: t("notifications.1.title"),
-    description: t("notifications.1.description"),
-    time: t("notifications.1.time"),
-    type: "info",
-  },
-  {
-    id: 2,
-    title: t("notifications.2.title"),
-    description: t("notifications.2.description"),
-    time: t("notifications.2.time"),
-    type: "success",
-  },
-  {
-    id: 3,
-    title: t("notifications.3.title"),
-    description: t("notifications.3.description"),
-    time: t("notifications.3.time"),
-    type: "warning",
-  },
-];
+
 
 // Instruction Steps
 const instructionSteps = [
@@ -93,9 +72,21 @@ const instructionSteps = [
 
 
   }
+  const fetchStatus = async () => { 
+try{
+const response = await axios.get(`http://localhost:5000/api/video/save/${userId}`);
+setAistatus(response.data.result); // Assuming the API returns the AI status directly
+console.log(response)
+}
+catch(error){
+  console.error("❌ Error fetching AIstatus:", error);
+}
+
+  }
   useEffect(() => {
     fetchEvents();
     fetchNotifications();
+    fetchStatus();
   }, []);
   return (
     <AppTheme {...props}>
@@ -226,13 +217,10 @@ const instructionSteps = [
                 key={notification.id}
                 sx={{
                   backgroundColor:
-                    notification.type === "success"
+                   aiStatus === "Green"
                       ? green[50]
-                      : notification.type === "info"
-                      ? blue[50]
-                      : notification.type === "warning"
-                      ? red[50]
-                      : grey[50],
+                      
+                      : red[50],
                   borderRadius: 2,
                   mb: 1,
                 }}
@@ -241,13 +229,10 @@ const instructionSteps = [
                   <Avatar
                     sx={{
                       bgcolor:
-                        notification.type === "success"
+                        aiStatus === "Green"
                           ? green[500]
-                          : notification.type === "info"
-                          ? blue[500]
-                          : notification.type === "warning"
-                          ? red[500]
-                          : grey[500],
+                          
+                          : red[500],
                     }}
                   >
                     {notification.type === "success" ? (

@@ -6,22 +6,20 @@ import {  DashboardIcon, LoginIcon, RegisterIcon, LogoutIcon } from "../componen
 import { ReactComponent as SmartVerifyLogo } from '../logo.svg';
 import { useTranslation } from "react-i18next";
 import TNLOGO from "../assets/logo4.png";
+import { useAuth } from "./AuthContext"; // path may vary
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { t, i18n } = useTranslation();
+  const { isAuthenticated, logout } = useAuth();
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
   };
-  useEffect(() => {
-    setIsAuthenticated(!!localStorage.getItem("authToken"));
-  }, []);
+  
 
   const handleLogout = () => {
-    localStorage.removeItem("authToken");
-    setIsAuthenticated(false);
+    logout();
     navigate("/login");
   };
 

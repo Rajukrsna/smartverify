@@ -6,6 +6,10 @@ import "react-toastify/dist/ReactToastify.css";
 import RecordingInstructionsCard from "./RecordingInstructionCard";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
+import { NFTStorage, File } from 'nft.storage';
+import { sha256 } from 'js-sha256'; // For hashing
+const nftStorageClient = new NFTStorage({ token: '758229bf.5023b9cb6bfb47268f37e96a4f5f9bc1' });
+
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
@@ -100,60 +104,97 @@ const questions = t("videoConsent.questions", { returnObjects: true });
   
   
 
-  const listenForResponse = (index) => {
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = "en-US";
-    recognition.start();
+    const listenForResponse = (index) => {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = "en-US";
+      recognition.start();
 
-    recognition.onresult = (event) => {
-      const response = event.results[0][0].transcript;
-      setTranscript((prev) => [...prev, { question: questions[index], answer: response }]);
-      console.log(`Q: ${questions[index]}, A: ${response}`);
+      recognition.onresult = (event) => {
+        const response = event.results[0][0].transcript;
+        setTranscript((prev) => [...prev, { question: questions[index], answer: response }]);
+        console.log(`Q: ${questions[index]}, A: ${response}`);
 
-      // Ask next question
-      if (index + 1 < questions.length) {
-        setTimeout(() => askQuestion(index + 1), 1000);
-      }
+        // Ask next question
+        if (index + 1 < questions.length) {
+          setTimeout(() => askQuestion(index + 1), 1000);
+        }
+      };
+
+      recognition.onerror = (event) => {
+        console.error("Speech recognition error:", event.error);
+      };
     };
-
-    recognition.onerror = (event) => {
-      console.error("Speech recognition error:", event.error);
-    };
-  };
-
   const handleSubmitVideo = async () => {
     setVideoUploading(true);
 
-    // Convert recorded video to Blob
-    const recordedBlob = new Blob(chunks.current, { type: "video/webm" });
-    const formData = new FormData();
-    formData.append("video", recordedBlob);
-    formData.append("transcript", JSON.stringify(transcript));
-    formData.append("userId", userId);
+    try {
+       // 1. Create Blob from recorded chunks
+       const recordedBlob = new Blob(chunks.current, { type: "video/webm" });
 
-    //try {
-    //  const response = await axios.post("http://localhost:5000/api/video/upload", formData, {
-      //  headers: { "Content-Type": "multipart/form-data" }
-    //  });
-                   
-      setVideoUploading(false);
-      setVideoSubmitted(true);
-      setSentimentResult("Positive");
-      toast.success(t("videoConsent.recordingSuccess"), { position: "top-right" });
+       // 2. Create File object
+       const file = new File([recordedBlob], 'consent-video.webm', { type: 'video/webm' });
 
-      // Save event in the database
-      await axios.post(`${backendUrl}/api/timeline/save-event`, {
-        userId: userId,
-        title: "Video Consent Verified Successfully",
-        description: "AI Verification of Consent Video is Done.",
-        status: "Completed",
-      });
+       // 3. Generate hash
+       const arrayBuffer = await recordedBlob.arrayBuffer();
+       const uint8Array = new Uint8Array(arrayBuffer);
+       const videoHash = sha256(uint8Array);
 
-      setTimeout(() => handleNextStep(), 4000);
-   // } catch (error) {
-     /// console.error("Error uploading video:", error);
-    //}
-  };
+       console.log("Video Hash (SHA-256):", videoHash);
+
+       // ✅ 4. Prepare FormData
+       const formData = new FormData();
+       formData.append('file', file);  // This is important!
+       formData.append('videoHash', videoHash);
+       formData.append('transcript', transcript);
+       formData.append('userId', userId);
+
+       // ✅ 5. POST as multipart/form-data
+       const response = await axios.post("http://localhost:5000/api/video/upload", formData, {
+           headers: {
+               'Content-Type': 'multipart/form-data'
+           }
+       });
+         const data = response.data;
+         console.log("Response from server:", data);
+         let aiFlag = "Green";
+         if(data.message === "1")
+         {
+          aiFlag = "Red"
+         }
+         else
+         aiFlag = "Green"
+        // 6. Update UI and show success toast
+        setVideoUploading(false);
+        setVideoSubmitted(true);
+        setSentimentResult("Moving to the next step...");
+        toast.success(t("videoConsent.recordingSuccess"), { position: "top-right" });
+
+        // 7. Save event in the database
+        await axios.post(`${backendUrl}/api/timeline/save-event`, {
+            userId: userId,
+            title: "Video Consent Recorded Successfully",
+            description: "Consent video is Recorded Successfully.",
+            status: "Completed",
+           
+        });
+        // save the ai status in the database
+        await axios.post(`${backendUrl}/api/video/save`, {
+          userId: userId,
+                aiFlag: aiFlag
+     } )
+
+
+        // 8. Transition to the next step
+        setTimeout(() => handleNextStep(), 4000);
+    } catch (error) {
+        console.error(error);
+        toast.error("Error uploading video consent", { position: "top-right" });
+        setVideoUploading(false);
+    }
+};
+
+
+  
 
   return (
     <Grid container spacing={2}>
@@ -173,7 +214,7 @@ const questions = t("videoConsent.questions", { returnObjects: true });
           </Box>
           {videoSubmitted && (
             <Typography sx={{ mt: 2 }} color="green">
-              {t("ai")}: {sentimentResult}
+             {sentimentResult}
             </Typography>
           )}
         </Paper>

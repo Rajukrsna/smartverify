@@ -174,9 +174,7 @@ const Home = () => {
         paragraph
         sx={{ fontSize: "1.1rem", lineHeight: 1.8, color: "#444" }}
       >
-        Our platform simplifies the registration process for departments by offering a secure,
-        transparent, and intuitive user experience. We leverage advanced AI verification and
-        blockchain technology to ensure data integrity and prevent fraudulent activity.
+        {t("para")}
       </Typography>
       <Typography
         variant="body1"

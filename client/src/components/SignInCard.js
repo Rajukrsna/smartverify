@@ -15,6 +15,8 @@ import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 import ForgotPassword from './ForgotPassword';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
+import { useAuth } from "./AuthContext";
+
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -32,7 +34,10 @@ const Card = styled(MuiCard)(({ theme }) => ({
 }));
 
 export default function SignInCard() {
+  
   const navigate = useNavigate();
+  const { login } = useAuth();
+
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [open, setOpen] = React.useState(false);
@@ -47,6 +52,9 @@ export default function SignInCard() {
       if (response.data) {
         localStorage.setItem("authToken", response.data.token);
         localStorage.setItem("userId", response.data.user.id);
+        const token = response.data.token;    
+        login(token);
+
         navigate("/seller-dashboard");
       }
     } catch (error) {
